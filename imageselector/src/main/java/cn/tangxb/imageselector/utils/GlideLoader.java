@@ -12,6 +12,8 @@ public class GlideLoader {
 	public static void loadImg(Context context, ImageView imageView, String url) {
 		Glide.with(context).load(url).placeholder(R.drawable.bg_loading)
 				.error(R.drawable.bg_load_failed)
+				.crossFade()
+				.centerCrop()
 				.dontAnimate()
 				.into(imageView);
 	}

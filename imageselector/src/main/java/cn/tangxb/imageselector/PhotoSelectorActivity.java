@@ -23,7 +23,7 @@ import cn.tangxb.imageselector.adapter.AlbumAdapter;
 import cn.tangxb.imageselector.adapter.PhotoSelectorAdapter;
 import cn.tangxb.imageselector.domain.PhotoSelectorDomain;
 import cn.tangxb.imageselector.listener.OnLocalAlbumListener;
-import cn.tangxb.imageselector.listener.OnLocalReccentListener;
+import cn.tangxb.imageselector.listener.OnLocalRecentListener;
 import cn.tangxb.imageselector.model.AlbumModel;
 import cn.tangxb.imageselector.model.PhotoModel;
 import cn.tangxb.imageselector.utils.AnimationUtil;
@@ -90,7 +90,7 @@ public class PhotoSelectorActivity extends Activity implements
 
         findViewById(R.id.bv_back_lh).setOnClickListener(this); // 返回
 
-        photoSelectorDomain.getReccent(reccentListener); // 更新最近照片
+        photoSelectorDomain.getReccent(recentListener); // 更新最近照片
         photoSelectorDomain.updateAlbum(albumListener); // 跟新相册信息
     }
 
@@ -110,7 +110,7 @@ public class PhotoSelectorActivity extends Activity implements
      */
     private void preview() {
         Bundle bundle = new Bundle();
-        bundle.putSerializable("photos", selected);
+        bundle.putSerializable("selectedPhotos", selected);
         Intent intent = new Intent(PhotoSelectorActivity.this, PhotoPreviewActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
@@ -151,7 +151,7 @@ public class PhotoSelectorActivity extends Activity implements
     }
 
     @Override
-    /** 鐩稿唽鍒楄〃鐐瑰嚮浜嬩欢 */
+    /** 相册列表点击事件 */
     public void onItemClick(AdapterView<?> parent, View view, int position,
                             long id) {
         AlbumModel current = (AlbumModel) parent.getItemAtPosition(position);
@@ -165,19 +165,18 @@ public class PhotoSelectorActivity extends Activity implements
         albumAdapter.notifyDataSetChanged();
         hideAlbum();
         tvAlbum.setText(current.getName());
-        // tvTitle.setText(current.getName());
+        tvTitle.setText(current.getName());
 
-        // 鏇存柊鐓х墖鍒楄〃
+        // 更新照片列表
         if (current.getName().equals(RECCENT_PHOTO))
-            photoSelectorDomain.getReccent(reccentListener);
+            photoSelectorDomain.getReccent(recentListener);
         else
-            photoSelectorDomain.getAlbum(current.getName(), reccentListener); // 鑾峰彇閫変腑鐩稿唽鐨勭収鐗�
+            photoSelectorDomain.getAlbum(current.getName(), recentListener); // 获取选中相册的照片
     }
 
     @Override
-    /** 鐓х墖閫変腑鐘舵�佹敼鍙樹箣鍚� */
-    public void onCheckedChanged(PhotoModel photoModel,
-                                 CompoundButton buttonView, boolean isChecked) {
+    /** 照片选中状态改变之后 */
+    public void onCheckedChanged(PhotoModel photoModel, CompoundButton buttonView, boolean isChecked) {
         if (isChecked) {
             if (!selected.contains(photoModel))
                 selected.add(photoModel);
@@ -195,8 +194,12 @@ public class PhotoSelectorActivity extends Activity implements
 
     @Override
     public void onItemClick(int position) {
-        // TODO Auto-generated method stub
-
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("position", position);
+        bundle.putString("albumName", tvAlbum.getText().toString());
+        Intent intent = new Intent(PhotoSelectorActivity.this, PhotoPreviewActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     private OnLocalAlbumListener albumListener = new OnLocalAlbumListener() {
@@ -206,7 +209,7 @@ public class PhotoSelectorActivity extends Activity implements
         }
     };
 
-    private OnLocalReccentListener reccentListener = new OnLocalReccentListener() {
+    private OnLocalRecentListener recentListener = new OnLocalRecentListener() {
         @Override
         public void onPhotoLoaded(List<PhotoModel> photos) {
             for (PhotoModel model : photos) {
@@ -215,7 +218,7 @@ public class PhotoSelectorActivity extends Activity implements
                 }
             }
             photoAdapter.update(photos);
-            gvPhotos.smoothScrollToPosition(0); // 婊氬姩鍒伴《绔�
+            gvPhotos.smoothScrollToPosition(0); // 滚动到顶端
             // reset(); //--keep selected photos
 
         }

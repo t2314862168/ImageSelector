@@ -5,6 +5,6 @@ import java.util.List;
 import cn.tangxb.imageselector.model.PhotoModel;
 
 
-public interface OnLocalReccentListener {
+public interface OnLocalRecentListener {
 	public void onPhotoLoaded(List<PhotoModel> photos);
 }

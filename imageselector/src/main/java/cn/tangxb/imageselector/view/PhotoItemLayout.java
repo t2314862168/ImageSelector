@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnLongClickListener;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -23,7 +22,7 @@ import cn.tangxb.imageselector.utils.GlideLoader;
  */
 
 public class PhotoItemLayout extends LinearLayout implements OnCheckedChangeListener,
-		OnLongClickListener {
+		View.OnClickListener {
 
 	private ImageView ivPhoto;
 	private CheckBox cbPhoto;
@@ -43,7 +42,7 @@ public class PhotoItemLayout extends LinearLayout implements OnCheckedChangeList
 				true);
 		this.listener = listener;
 
-		setOnLongClickListener(this);
+		setOnClickListener(this);
 
 		ivPhoto = (ImageView) findViewById(R.id.iv_photo_lpsi);
 		cbPhoto = (CheckBox) findViewById(R.id.cb_photo_lpsi);
@@ -69,14 +68,6 @@ public class PhotoItemLayout extends LinearLayout implements OnCheckedChangeList
 	/** 设置路径下的图片对应的缩略图 */
 	public void setImageDrawable(final PhotoModel photo) {
 		this.photo = photo;
-		// You may need this setting form some custom ROM(s)
-		/*
-		 * new Handler().postDelayed(new Runnable() {
-		 *
-		 * @Override public void run() { ImageLoader.getInstance().displayImage(
-		 * "file://" + photo.getOriginalPath(), ivPhoto); } }, new
-		 * Random().nextInt(10));
-		 */
 		String url = "file://" + photo.getOriginalPath();
 		GlideLoader.loadImg(getContext(), ivPhoto, url);
 	}
@@ -101,13 +92,6 @@ public class PhotoItemLayout extends LinearLayout implements OnCheckedChangeList
 		this.position = position;
 	}
 
-	// @Override
-	// public void
-	// onClick(View v) {
-	// if (l != null)
-	// l.onItemClick(position);
-	// }
-
 	/** 图片Item选中事件监听器 */
 	public static interface onPhotoItemCheckedListener {
 		public void onCheckedChanged(PhotoModel photoModel,
@@ -120,10 +104,8 @@ public class PhotoItemLayout extends LinearLayout implements OnCheckedChangeList
 	}
 
 	@Override
-	public boolean onLongClick(View v) {
+	public void onClick(View v) {
 		if (l != null)
 			l.onItemClick(position);
-		return true;
 	}
-
 }

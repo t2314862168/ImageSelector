@@ -9,7 +9,7 @@ import java.util.List;
 
 import cn.tangxb.imageselector.controller.AlbumController;
 import cn.tangxb.imageselector.listener.OnLocalAlbumListener;
-import cn.tangxb.imageselector.listener.OnLocalReccentListener;
+import cn.tangxb.imageselector.listener.OnLocalRecentListener;
 import cn.tangxb.imageselector.model.AlbumModel;
 import cn.tangxb.imageselector.model.PhotoModel;
 
@@ -23,7 +23,7 @@ public class PhotoSelectorDomain {
 		albumController = new AlbumController(context);
 	}
 
-	public void getReccent(final OnLocalReccentListener listener) {
+	public void getReccent(final OnLocalRecentListener listener) {
 		final Handler handler = new Handler() {
 			@SuppressWarnings("unchecked")
 			@Override
@@ -63,7 +63,7 @@ public class PhotoSelectorDomain {
 	}
 
 	/** 获取单个相册下的所有照片信息 */
-	public void getAlbum(final String name, final OnLocalReccentListener listener) {
+	public void getAlbum(final String name, final OnLocalRecentListener listener) {
 		final Handler handler = new Handler() {
 			@SuppressWarnings("unchecked")
 			@Override
