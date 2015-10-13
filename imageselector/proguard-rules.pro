@@ -15,3 +15,6 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+-keepnames class cn.tangxb.imageselector.FlickrGlideModule
+-keep public class * implements com.bumptech.glide.module.GlideModule

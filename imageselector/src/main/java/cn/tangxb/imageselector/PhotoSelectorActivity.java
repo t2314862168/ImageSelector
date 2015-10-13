@@ -16,6 +16,9 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.ListPreloader;
+import com.bumptech.glide.util.ViewPreloadSizeProvider;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,6 +56,9 @@ public class PhotoSelectorActivity extends Activity implements
     private ArrayList<PhotoModel> selected;
     private TextView tvNumber;
 
+    private static final int PRELOAD_AHEAD_ITEMS = 5;
+    private ViewPreloadSizeProvider<PhotoModel> preloadSizeProvider;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,6 +88,12 @@ public class PhotoSelectorActivity extends Activity implements
         photoAdapter = new PhotoSelectorAdapter(getApplicationContext(),
                 new ArrayList<PhotoModel>(), dm.widthPixels, this, this, this);
         gvPhotos.setAdapter(photoAdapter);
+
+        // use ListPreloader to observer list scroll
+        preloadSizeProvider = new ViewPreloadSizeProvider<>();
+        photoAdapter.setPreloadSizeProvider(preloadSizeProvider);
+        ListPreloader<PhotoModel> preLoader = new ListPreloader<>(photoAdapter, preloadSizeProvider, PRELOAD_AHEAD_ITEMS);
+        gvPhotos.setOnScrollListener(preLoader);
 
         albumAdapter = new AlbumAdapter(getApplicationContext(),
                 new ArrayList<AlbumModel>());

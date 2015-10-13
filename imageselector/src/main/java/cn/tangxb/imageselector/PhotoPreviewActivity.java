@@ -11,6 +11,9 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.bumptech.glide.DrawableRequestBuilder;
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +36,7 @@ public class PhotoPreviewActivity extends Activity {
     ArrayList<PhotoModel> photoModelList;
     PhotoSelectorDomain photoSelectorDomain;
     String albumName;
+    DrawableRequestBuilder<PhotoModel> mGlideBuilder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +47,12 @@ public class PhotoPreviewActivity extends Activity {
         photoModelList = new ArrayList<>();
         previewAdapter = new PhotoPreviewAdapter();
         mViewPager.setAdapter(previewAdapter);
+        mGlideBuilder = Glide.with(this).from(PhotoModel.class)
+                .placeholder(R.drawable.bg_loading)
+                .error(R.drawable.bg_load_failed)
+                .crossFade()
+                .centerCrop()
+                .dontAnimate();
 
         photoSelectorDomain = new PhotoSelectorDomain(getApplicationContext());
         Bundle bundle = getIntent().getExtras();
@@ -78,8 +88,11 @@ public class PhotoPreviewActivity extends Activity {
             frameLayout.setBackgroundColor(Color.BLACK);
             PhotoView photoView = new PhotoView(container.getContext());
             photoView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+            // use url to load
             String imageUrl = "file://" + photoModelList.get(position).getOriginalPath();
             GlideLoader.loadImg(PhotoPreviewActivity.this, photoView, imageUrl);
+            // use custom ModelLoader to load
+//            mGlideBuilder.load(photoModelList.get(position)).into(photoView);
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
             params.gravity = Gravity.CENTER;
             frameLayout.addView(photoView, params);
