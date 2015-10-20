@@ -13,7 +13,7 @@ public class DataProvider {
     public void buildData() {
         commentList = new ArrayList<>();
         favorList = new ArrayList<>();
-        for (int i = 0; i < 15; i++) {
+        for (int i = 0; i < 20; i++) {
             commentList.add("This is Comment" + i);
         }
         for (int i = 0; i < 3; i++) {

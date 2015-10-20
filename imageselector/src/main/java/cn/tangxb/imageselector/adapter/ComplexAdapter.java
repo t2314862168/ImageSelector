@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import cn.tangxb.imageselector.R;
  */
 public class ComplexAdapter extends BaseAdapter {
     private Context context;
+    private ListView mListView;
     private List<String> favorList;
     private List<String> commentList;
     private List<String> list;
@@ -28,23 +30,29 @@ public class ComplexAdapter extends BaseAdapter {
     private final int footType = 0x3;
     private LayoutInflater inflater;
     private MyOnClickListener onClickListener;
-    private int blankHeight;
+    private int blankFavorH;
+    private int blankCommentH;
     private boolean hasCaculate;
     private boolean showComment;
 
-    public ComplexAdapter(Context context, List<String> favorList, List<String> commentList) {
+    public ComplexAdapter(Context context, ListView listView, List<String> favorList, List<String> commentList) {
         this.context = context;
+        mListView = listView;
         this.favorList = favorList;
         this.commentList = commentList;
         list = new ArrayList<>();
-        list.addAll(commentList);
         showComment = true;
+        list.addAll(showComment ? commentList : favorList);
         onClickListener = new MyOnClickListener();
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     public void setBlankHeight(int blankHeight) {
-        this.blankHeight = blankHeight;
+        if (showComment) {
+            blankCommentH = blankHeight;
+        } else {
+            blankFavorH = blankHeight;
+        }
     }
 
     public void setHasCaculate(boolean hasCaculate) {
@@ -151,10 +159,10 @@ public class ComplexAdapter extends BaseAdapter {
                 // 动态设置item的高度 http://www.cnblogs.com/likwo/p/3624425.html
                 viewHolder = (FootViewHolder) convertView.getTag();
                 LinearLayout.LayoutParams linearParams = (LinearLayout.LayoutParams) viewHolder.llView.getLayoutParams();
-                if (hasCaculate) {
-                    linearParams.height = blankHeight;
+                if (showComment) {
+                    linearParams.height = blankCommentH;
                 } else {
-                    linearParams.height = 0;
+                    linearParams.height = blankFavorH;
                 }
                 viewHolder.llView.setLayoutParams(linearParams);
             }
@@ -185,7 +193,6 @@ public class ComplexAdapter extends BaseAdapter {
         list.addAll(tempList);
         showComment = flag;
         hasCaculate = false;
-        blankHeight = 0;
         notifyDataSetChanged();
     }
 

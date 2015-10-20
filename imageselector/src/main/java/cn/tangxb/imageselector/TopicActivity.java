@@ -19,7 +19,6 @@ public class TopicActivity extends AppCompatActivity {
     private DataProvider dataProvider;
     private ComplexAdapter complexAdapter;
     private RelativeLayout floatView;
-    private boolean scrollTop;
     private int top = -1;
     private int blankViewTop;
     private TextView favorTv;
@@ -38,7 +37,7 @@ public class TopicActivity extends AppCompatActivity {
 
         dataProvider = new DataProvider();
         dataProvider.buildData();
-        complexAdapter = new ComplexAdapter(this, dataProvider.getFavorList(), dataProvider.getCommentList());
+        complexAdapter = new ComplexAdapter(this, mListView, dataProvider.getFavorList(), dataProvider.getCommentList());
         commentTv.setText("评论" + dataProvider.getCommentList().size());
         favorTv.setText("转发" + dataProvider.getFavorList().size());
         mListView.setAdapter(complexAdapter);
@@ -55,9 +54,6 @@ public class TopicActivity extends AppCompatActivity {
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                if (visibleItemCount == 0) {
-                    return;
-                }
                 showOrHideFloat(firstVisibleItem);
                 if (firstVisibleItem + visibleItemCount == totalItemCount) {
                     View blankView = view.getChildAt(totalItemCount - 1);
@@ -95,22 +91,13 @@ public class TopicActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             int id = v.getId();
-            final int firstVisiblePosition = mListView.getFirstVisiblePosition();
             if (id == R.id.tv_float_favor) {
                 if (complexAdapter.isShowComment()) {
                     complexAdapter.changeData(dataProvider.getFavorList(), false);
-                    mListView.setSelection(ListView.FOCUS_DOWN);
-//                    mListView.setSelection(3);
                 }
             } else if (id == R.id.tv_float_comment) {
                 if (!complexAdapter.isShowComment()) {
                     complexAdapter.changeData(dataProvider.getCommentList(), true);
-                    mListView.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            mListView.smoothScrollToPosition(firstVisiblePosition);
-                        }
-                    });
                 }
             }
         }
