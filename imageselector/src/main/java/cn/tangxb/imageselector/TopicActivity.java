@@ -59,17 +59,17 @@ public class TopicActivity extends AppCompatActivity {
                     View blankView = view.getChildAt(totalItemCount - 1);
                     for (int i = firstVisibleItem; i < visibleItemCount; i++) {
                         if (complexAdapter.getItemViewType(i) == ComplexAdapter.contentTitleType) {
-                            if (!complexAdapter.isHasCaculate()) {
+                            if (!complexAdapter.isHasCalculate()) {
                                 top = view.getChildAt(i).getTop();
                                 break;
                             }
                         }
                     }
 
-                    if (!complexAdapter.isHasCaculate() && blankView != null) {
+                    if (!complexAdapter.isHasCalculate() && blankView != null) {
                         blankViewTop = blankView.getTop();
                         complexAdapter.setBlankHeight(mListView.getMeasuredHeight() - blankViewTop + top);
-                        complexAdapter.setHasCaculate(true);
+                        complexAdapter.setHasCalculate(true);
                         complexAdapter.notifyDataSetChanged();
                     }
                 }

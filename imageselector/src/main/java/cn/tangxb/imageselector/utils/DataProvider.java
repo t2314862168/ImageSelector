@@ -16,7 +16,7 @@ public class DataProvider {
         for (int i = 0; i < 20; i++) {
             commentList.add("This is Comment" + i);
         }
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 2; i++) {
             favorList.add("This is Favor" + i);
         }
     }

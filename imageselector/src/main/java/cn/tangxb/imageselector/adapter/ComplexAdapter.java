@@ -32,8 +32,10 @@ public class ComplexAdapter extends BaseAdapter {
     private MyOnClickListener onClickListener;
     private int blankFavorH;
     private int blankCommentH;
-    private boolean hasCaculate;
+    private boolean hasCalculate;
     private boolean showComment;
+    private boolean calculateFavor;
+    private boolean calculateComment;
 
     public ComplexAdapter(Context context, ListView listView, List<String> favorList, List<String> commentList) {
         this.context = context;
@@ -50,17 +52,19 @@ public class ComplexAdapter extends BaseAdapter {
     public void setBlankHeight(int blankHeight) {
         if (showComment) {
             blankCommentH = blankHeight;
+            calculateComment = true;
         } else {
+            calculateFavor = true;
             blankFavorH = blankHeight;
         }
     }
 
-    public void setHasCaculate(boolean hasCaculate) {
-        this.hasCaculate = hasCaculate;
+    public void setHasCalculate(boolean hasCalculate) {
+        this.hasCalculate = hasCalculate;
     }
 
-    public boolean isHasCaculate() {
-        return hasCaculate;
+    public boolean isHasCalculate() {
+        return hasCalculate;
     }
 
     public boolean isShowComment() {
@@ -156,15 +160,28 @@ public class ComplexAdapter extends BaseAdapter {
                 viewHolder.llView = convertView.findViewById(R.id.ll_foot);
                 convertView.setTag(viewHolder);
             } else {
-                // 动态设置item的高度 http://www.cnblogs.com/likwo/p/3624425.html
                 viewHolder = (FootViewHolder) convertView.getTag();
-                LinearLayout.LayoutParams linearParams = (LinearLayout.LayoutParams) viewHolder.llView.getLayoutParams();
-                if (showComment) {
-                    linearParams.height = blankCommentH;
-                } else {
-                    linearParams.height = blankFavorH;
+            }
+            // 动态设置item的高度 http://www.cnblogs.com/likwo/p/3624425.html
+            LinearLayout.LayoutParams linearParams = (LinearLayout.LayoutParams) viewHolder.llView.getLayoutParams();
+            if (showComment) {
+                if (!calculateComment) {
+                    int blankViewTop = convertView.getTop();
+                    int index = mListView.getFirstVisiblePosition() + 1;
+                    if (getItemViewType(index) == contentTitleType) {
+                        blankCommentH = mListView.getMeasuredHeight() - blankViewTop + mListView.getChildAt(index).getTop();
+                    }
                 }
-                viewHolder.llView.setLayoutParams(linearParams);
+                linearParams.height = blankCommentH;
+            } else {
+                if (!calculateFavor) {
+                    int blankViewTop = convertView.getTop();
+                    int index = mListView.getFirstVisiblePosition() + 1;
+                    if (getItemViewType(index) == contentTitleType) {
+                        blankFavorH = mListView.getMeasuredHeight() - blankViewTop + mListView.getChildAt(index).getTop();
+                    }
+                }
+                linearParams.height = blankFavorH;
             }
         }
         return convertView;
@@ -192,7 +209,7 @@ public class ComplexAdapter extends BaseAdapter {
         list.clear();
         list.addAll(tempList);
         showComment = flag;
-        hasCaculate = false;
+        hasCalculate = false;
         notifyDataSetChanged();
     }
 
